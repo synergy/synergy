@@ -52,7 +52,9 @@ if(UNIX)
     base
     platform
     mt
-    server)
+    server
+    ${cli11_lib}
+    ${tomlplusplus_lib})
 
   if(NOT APPLE)
     target_link_libraries(${lib_name} pugixml)

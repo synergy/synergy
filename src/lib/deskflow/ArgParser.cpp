@@ -264,6 +264,10 @@ bool ArgParser::parseGenericArgs(int argc, const char *const *argv, int &i) {
     argsBase().m_tlsCertFile = argv[++i];
   } else if (isArg(i, argc, argv, nullptr, "--prevent-sleep")) {
     argsBase().m_preventSleep = true;
+#if defined(WINAPI_XWINDOWS) or defined(WINAPI_LIBEI)
+  } else if (isArg(i, argc, argv, nullptr, "--no-libei")) {
+    argsBase().m_enableLibei = false;
+#endif
   } else {
     // option not supported here
     return false;
