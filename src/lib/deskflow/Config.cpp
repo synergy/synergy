@@ -25,7 +25,8 @@
 #include <vector>
 
 #if HAVE_TOMLPLUSPLUS
-#include <toml++/toml.hpp>
+// Use .h for fallback with 3.3.0
+#include <toml++/toml.h>
 #endif
 
 namespace deskflow {
