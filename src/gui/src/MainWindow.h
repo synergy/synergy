@@ -79,6 +79,7 @@ public:
   void open();
   ServerConfig &serverConfig() { return m_ServerConfig; }
   void autoAddScreen(const QString name);
+  void checkForUpdates();
 
 signals:
   void created();

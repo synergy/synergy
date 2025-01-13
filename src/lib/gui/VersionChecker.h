@@ -19,6 +19,8 @@
 
 #include "proxy/QNetworkAccessManagerProxy.h"
 
+#include "env_vars.h"
+
 #include <QObject>
 #include <QString>
 #include <memory>

@@ -18,7 +18,11 @@
 #include "VersionChecker.h"
 
 #include "common/constants.h"
-#include "env_vars.h"
+#include "gui_config.h" // IWYU pragma: keep
+
+#ifdef DESKFLOW_GUI_HOOK_HEADER
+#include DESKFLOW_GUI_HOOK_HEADER
+#endif
 
 #include <QLocale>
 #include <QNetworkAccessManager>
@@ -41,7 +45,12 @@ VersionChecker::VersionChecker(
 }
 
 void VersionChecker::checkLatest() const {
-  const QString url = env_vars::versionUrl();
+  QString url = deskflow::gui::env_vars::versionUrl();
+
+#ifdef DESKFLOW_GUI_HOOK_VERSION
+  DESKFLOW_GUI_HOOK_VERSION
+#endif
+
   qDebug("checking for updates at: %s", qPrintable(url));
   auto request = QNetworkRequest(url);
   auto userAgent = QString("%1 %2 on %3")
@@ -104,8 +113,8 @@ int VersionChecker::compareVersions(const QString &left, const QString &right) {
   QString leftNumber = leftParts.at(0);
   QString rightNumber = rightParts.at(0);
 
-  QStringList leftNumberParts = left.split(".");
-  QStringList rightNumberParts = right.split(".");
+  QStringList leftNumberParts = leftNumber.split(".");
+  QStringList rightNumberParts = rightNumber.split(".");
 
   auto leftStagePart = leftParts.size() > 1 ? leftParts.at(1) : "";
   auto rightStagePart = rightParts.size() > 1 ? rightParts.at(1) : "";
