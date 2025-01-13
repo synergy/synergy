@@ -916,10 +916,6 @@ void ServerProxy::setActiveServerLanguage(const String &language) {
 void ServerProxy::checkMissedLanguages() const {
   auto missedLanguages = m_languageManager.getMissedLanguages();
   if (!missedLanguages.empty()) {
-    LOG(
-        (CLOG_WARN
-         "You need to install these languages on this computer and restart "
-         "Deskflow to enable support for multiple languages: %s",
-         missedLanguages.c_str()));
+    LOG((CLOG_WARN "missing languages: %s", missedLanguages.c_str()));
   }
 }
