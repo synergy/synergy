@@ -29,8 +29,16 @@ macro(configure_libs)
   configure_qt()
   configure_openssl()
   configure_coverage()
-  configure_tomlplusplus()
-  configure_cli11()
+
+  option(USE_TOMLPLUSPLUS "Use toml++" ON)
+  if(USE_TOMLPLUSPLUS)
+    configure_tomlplusplus()
+  endif()
+
+  option(USE_CLI11 "Use CLI11" ON)
+  if(USE_CLI11)
+    configure_cli11()
+  endif()
 
   if(BUILD_TESTS)
     configure_gtest()
