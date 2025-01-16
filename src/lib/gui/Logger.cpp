@@ -69,12 +69,12 @@ QString printLine(
 }
 
 void Logger::loadEnvVars() {
-  const auto debugEnvVar = qEnvironmentVariable("DESKFLOW_GUI_DEBUG");
+  const auto debugEnvVar = qEnvironmentVariable("SYNERGY_GUI_DEBUG");
   if (!debugEnvVar.isEmpty()) {
     m_debug = strToTrue(debugEnvVar);
   }
 
-  const auto verboseEnvVar = qEnvironmentVariable("DESKFLOW_GUI_VERBOSE");
+  const auto verboseEnvVar = qEnvironmentVariable("SYNERGY_GUI_VERBOSE");
   if (!verboseEnvVar.isEmpty()) {
     m_verbose = strToTrue(verboseEnvVar);
   }

@@ -31,14 +31,14 @@ TEST(LoggerTests, handleMessage_withDebugEnvVarOn_emitsNewLine) {
       [&newLineEmitted](const QString &line) {
         newLineEmitted = line.toStdString();
       });
-  qputenv("DESKFLOW_GUI_DEBUG", "true");
+  qputenv("SYNERGY_GUI_DEBUG", "true");
   logger.loadEnvVars();
 
   logger.handleMessage(QtDebugMsg, "stub", "test");
 
   EXPECT_THAT(newLineEmitted, HasSubstr("test"));
 
-  qputenv("DESKFLOW_GUI_DEBUG", "");
+  qputenv("SYNERGY_GUI_DEBUG", "");
 }
 
 TEST(LoggerTests, handleMessage_withDebugEnvVarOff_doesNotEmitNewLine) {
@@ -47,12 +47,12 @@ TEST(LoggerTests, handleMessage_withDebugEnvVarOff_doesNotEmitNewLine) {
   QObject::connect(
       &logger, &Logger::newLine, //
       [&newLineEmitted](const QString &line) { newLineEmitted = true; });
-  qputenv("DESKFLOW_GUI_DEBUG", "false");
+  qputenv("SYNERGY_GUI_DEBUG", "false");
   logger.loadEnvVars();
 
   logger.handleMessage(QtDebugMsg, "stub", "test");
 
   EXPECT_FALSE(newLineEmitted);
 
-  qputenv("DESKFLOW_GUI_DEBUG", "");
+  qputenv("SYNERGY_GUI_DEBUG", "");
 }

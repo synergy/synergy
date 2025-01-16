@@ -61,7 +61,7 @@ def get_app_version(filename):
     """
     Returns the version either from the env var, or from the version file.
     """
-    version = env.get_env("DESKFLOW_VERSION", required=False)
+    version = env.get_env("SYNERGY_VERSION", required=False)
     if version:
         return version
 

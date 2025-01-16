@@ -564,7 +564,7 @@ void MainWindow::createMenuBar() {
   m_pActionAbout->setText(QString("About %1...").arg(kAppName));
 
   const auto enableTestMenu =
-      strToTrue(qEnvironmentVariable("DESKFLOW_TEST_MENU"));
+      strToTrue(qEnvironmentVariable("SYNERGY_TEST_MENU"));
 
   if (enableTestMenu || kDebugBuild) {
     auto testMenu = new QMenu("Test", m_pMenuBar);
