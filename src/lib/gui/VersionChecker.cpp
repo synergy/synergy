@@ -90,7 +90,7 @@ void VersionChecker::replyFinished(QNetworkReply *reply) {
     return;
   }
 
-  qInfo("version check server success, http status: %d", httpStatus);
+  qDebug("version check server success, http status: %d", httpStatus);
 
   const auto newestVersion = QString(reply->readAll());
   qDebug("version check response: %s", qPrintable(newestVersion));
@@ -101,10 +101,14 @@ void VersionChecker::replyFinished(QNetworkReply *reply) {
   }
 
   if (compareVersions(kVersion, newestVersion) > 0) {
+    // Strip 'stable' from the version string as it's redundant.
+    const auto newestVersionClean =
+        QString(newestVersion).replace("-stable", "");
+
     qWarning(
         "current version %s out of date, update available: %s",
-        qPrintable(kVersion), qPrintable(newestVersion));
-    Q_EMIT updateFound(newestVersion);
+        qPrintable(kVersion), qPrintable(newestVersionClean));
+    Q_EMIT updateFound(newestVersionClean);
   } else {
     qDebug("current version %s up to date", qPrintable(kVersion));
   }
