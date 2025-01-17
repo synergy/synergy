@@ -147,9 +147,11 @@ int main(int argc, char *argv[]) {
   DESKFLOW_GUI_HOOK_START
 #endif
 
+#ifdef SYNERGY_VERSION_CHECK
   // It is important to check for updates after the start hook has run,
   // because the start hook may change the license.
   mainWindow.checkForUpdates();
+#endif
 
   return DeskflowApplication::exec();
 }
