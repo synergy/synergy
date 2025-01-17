@@ -1032,7 +1032,11 @@ void MainWindow::showAndActivate() {
 }
 
 void MainWindow::checkForUpdates() {
-  if (m_AppConfig.enableUpdateCheck().value()) {
+  const QString fakeVersion =
+      qEnvironmentVariable("SYNERGY_FAKE_REMOTE_VERSION");
+  if (!fakeVersion.isEmpty()) {
+    m_VersionChecker.fakeCheck(fakeVersion);
+  } else if (m_AppConfig.enableUpdateCheck().value()) {
     m_VersionChecker.checkLatest();
   } else {
     qDebug("update check disabled");

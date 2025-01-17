@@ -30,6 +30,7 @@
 #include <QNetworkRequest>
 #include <QProcess>
 #include <QRegularExpression>
+#include <QtCore>
 #include <memory>
 
 using namespace deskflow::gui;
@@ -42,6 +43,20 @@ VersionChecker::VersionChecker(
   connect(
       m_network.get(), &QNetworkAccessManagerProxy::finished, this,
       &VersionChecker::replyFinished);
+}
+
+void VersionChecker::fakeCheck(const QString &fakeVersion) {
+  if (compareVersions(kVersion, fakeVersion) > 0) {
+    qDebug(
+        "current version %s older than fake version %s", qPrintable(kVersion),
+        qPrintable(fakeVersion));
+    Q_EMIT updateFound(fakeVersion);
+    return;
+  } else {
+    qDebug(
+        "current version %s newer than fake version %s", qPrintable(kVersion),
+        qPrintable(fakeVersion));
+  }
 }
 
 void VersionChecker::checkLatest() const {
@@ -66,13 +81,32 @@ void VersionChecker::checkLatest() const {
 }
 
 void VersionChecker::replyFinished(QNetworkReply *reply) {
-  auto newestVersion = QString(reply->readAll());
-  if (!newestVersion.isEmpty() &&
-      compareVersions(DESKFLOW_VERSION, newestVersion) > 0) {
-    qDebug("update found: %s", qPrintable(newestVersion));
-    emit updateFound(newestVersion);
+  const auto httpStatus =
+      reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+  if (reply->error() != QNetworkReply::NoError) {
+    qWarning(
+        "version check server error: %s", qPrintable(reply->errorString()));
+    qWarning("error checking for updates, http status: %d", httpStatus);
+    return;
+  }
+
+  qInfo("version check server success, http status: %d", httpStatus);
+
+  const auto newestVersion = QString(reply->readAll());
+  qDebug("version check response: %s", qPrintable(newestVersion));
+
+  if (newestVersion.isEmpty()) {
+    qWarning("version check response is empty");
+    return;
+  }
+
+  if (compareVersions(kVersion, newestVersion) > 0) {
+    qWarning(
+        "current version %s out of date, update available: %s",
+        qPrintable(kVersion), qPrintable(newestVersion));
+    Q_EMIT updateFound(newestVersion);
   } else {
-    qDebug("no updates found");
+    qDebug("current version %s up to date", qPrintable(kVersion));
   }
 }
 

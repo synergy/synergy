@@ -41,6 +41,7 @@ public:
   explicit VersionChecker(
       std::shared_ptr<QNetworkAccessManagerProxy> network = nullptr);
   void checkLatest() const;
+  void fakeCheck(const QString &fakeVersion);
 public slots:
   void replyFinished(QNetworkReply *reply);
 signals:
