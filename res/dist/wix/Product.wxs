@@ -12,8 +12,9 @@
 		<Feature Id="ProductFeature" Title="$(var.Name)">
 			<ComponentGroupRef Id="ProductComponents"/>
 			<ComponentGroupRef Id="OpenSSLComponents"/>
-			<ComponentGroupRef Id="ProductQtStylesComponents"/>
-			<ComponentGroupRef Id="ProductQtPluginComponents"/>
+			<ComponentGroupRef Id="QtStylesComponents"/>
+			<ComponentGroupRef Id="QtPluginComponents"/>
+			<ComponentGroupRef Id="QtTlsComponents"/>
 			<ComponentRef Id="RegistryEntries"/>
 			<MergeRef Id="VC_Redist"/>
 		</Feature>
@@ -37,11 +38,7 @@
 				<!-- Windows 8 and later only -->
 				<Condition><![CDATA[Installed OR (VersionNT >= 602)]]></Condition>
 			</Component>
-			<?if $(var.Platform) = x64 ?>
-				<Merge Id="VC_Redist" SourceFile="$(var.ProjectResDir)\dist\wix\msm\Microsoft_VC142_CRT_x64.msm" DiskId="1" Language="0"/>
-			<?else ?>
-				<Merge Id="VC_Redist" SourceFile="$(var.ProjectResDir)\dist\wix\msm\Microsoft_VC142_CRT_x86.msm" DiskId="1" Language="0"/>
-			<?endif ?>
+			<Merge Id="VC_Redist" SourceFile="$(var.ProjectResDir)\dist\wix\msm\Microsoft_VC142_CRT_x64.msm" DiskId="1" Language="0"/>
 		</DirectoryRef>
 		<Property Id="CommonBackground">CommonBackground</Property>
 		<Binary Id="CommonBackground" SourceFile="$(var.ResDir)\dist\wix\images\common_background.png"/>
@@ -67,8 +64,9 @@
 			<Directory Id="$(var.ProgramFilesFolder)">
 				<Directory Id="INSTALLFOLDER" Name="$(var.Name)">
 					<Directory Id="OpenSSLDir" Name="OpenSSL"/>
-					<Directory Id="PlatformsDir" Name="Platforms"/>
-					<Directory Id="QTStylesDir" Name="styles"/>
+					<Directory Id="QtPlatformsDir" Name="Platforms"/>
+					<Directory Id="QtStylesDir" Name="styles"/>
+					<Directory Id="QtTlsDir" Name="styles"/>
 				</Directory>
 			</Directory>
 			<Directory Id="ProgramMenuFolder"/>
@@ -89,13 +87,8 @@
 					<fire:FirewallException Id="ClientFirewallException" IgnoreFailure="yes" Name="$(var.Name) Client" Scope="any"/>
 				</File>
 				<File Source="$(var.BinDir)/$(var.LegacyBin)" />
-				<?if $(var.Platform) = x64 ?>
-					<File Source="$(var.OpenSslDllDir)/libssl-3-x64.dll"/>
-					<File Source="$(var.OpenSslDllDir)/libcrypto-3-x64.dll"/>
-				<?else ?>
-					<File Source="$(var.OpenSslDllDir)/libssl-3.dll"/>
-					<File Source="$(var.OpenSslDllDir)/libcrypto-3.dll"/>
-				<?endif ?>
+				<File Source="$(var.OpenSslDllDir)/libssl-3-x64.dll"/>
+				<File Source="$(var.OpenSslDllDir)/libcrypto-3-x64.dll"/>
 			</Component>
 			<Component Guid="BAC8149B-6287-45BF-9C27-43D71ED40214" Id="Gui">
 				<File Id="GuiProgram" KeyPath="yes" Source="$(var.BinDir)/$(var.GuiBin)">
@@ -104,48 +97,33 @@
 					</Shortcut>
 					<fire:FirewallException Id="GuiFirewallException" IgnoreFailure="yes" Name="$(var.Name)" Scope="any"/>
 				</File>
-				<?if $(var.Configuration) = "Debug" ?>
-				<File Source="$(var.BinDir)\Qt6Cored.dll"/>
-				<File Source="$(var.BinDir)\Qt6Guid.dll"/>
-				<File Source="$(var.BinDir)\Qt6Networkd.dll"/>
-				<File Source="$(var.BinDir)\Qt6Svgd.dll"/>
-				<File Source="$(var.BinDir)\Qt6Widgetsd.dll"/>
-				<File Source="$(var.BinDir)\styles\qmodernwindowsstyle.dll"/>
-				<!-- HACK: Normally the C++ redistributable solves this dependency, including it can cause problems -->
-				<File Source="C:\Program Files (x86)\Windows Kits\10\bin\$(var.Platform)\ucrt\ucrtbased.dll"/>
-				<?else ?>
 				<File Source="$(var.BinDir)\Qt6Core.dll"/>
 				<File Source="$(var.BinDir)\Qt6Gui.dll"/>
 				<File Source="$(var.BinDir)\Qt6Network.dll"/>
 				<File Source="$(var.BinDir)\Qt6Svg.dll"/>
 				<File Source="$(var.BinDir)\Qt6Widgets.dll"/>
 				<File Source="$(var.BinDir)\styles\qmodernwindowsstyle.dll"/>
-				<?endif ?>
 			</Component>
 		</ComponentGroup>
-		<ComponentGroup Directory="QTStylesDir" Id="ProductQtStylesComponents">
-			<Component Guid="96E0F8D8-64FD-4CE8-94D1-F6EDCBBB4995" Id="Styles">
+		<ComponentGroup Directory="QtPlatformsDir" Id="QtPluginComponents">
+			<Component Guid="684EFA14-856B-440E-A5E6-E90E04E36B41" Id="QtPlatforms">
+				<File Source="$(var.BinDir)\platforms\qwindows.dll"/>
+			</Component>
+		</ComponentGroup>
+		<ComponentGroup Directory="QtStylesDir" Id="QtStylesComponents">
+			<Component Guid="96E0F8D8-64FD-4CE8-94D1-F6EDCBBB4995" Id="QtStyles">
 				<File Id="qmodernwindowsstyle" Source="$(var.BinDir)\styles\qmodernwindowsstyle.dll"/>
 			</Component>
 		</ComponentGroup>
-		<ComponentGroup Directory="PlatformsDir" Id="ProductQtPluginComponents">
-			<Component Guid="684EFA14-856B-440E-A5E6-E90E04E36B41" Id="QtPlatformPlugin">
-				<?if $(var.Configuration) = "Debug" ?>
-				<File Source="$(var.BinDir)\platforms\qwindowsd.dll"/>
-				<?else ?>
-				<File Source="$(var.BinDir)\platforms\qwindows.dll"/>
-				<?endif ?>
+		<ComponentGroup Directory="QtTlsDir" Id="QtTlsComponents">
+			<Component Guid="61F2F744-5005-4CD3-A44D-88427F04BBE8" Id="QtTls">
+				<File Source="$(var.BinDir)\tls\qopensslbackend.dll"/>
 			</Component>
 		</ComponentGroup>
 		<ComponentGroup Directory="OpenSSLDir" Id="OpenSSLComponents">
 			<Component Guid="92648F77-65A6-4B16-AC59-A1F37BD341B1" Id="OpenSSL">
-				<?if $(var.Platform) = x64 ?>
-					<File Id="OpenSSLDll1" Source="$(var.OpenSslDllDir)/libcrypto-3-x64.dll"/>
-					<File Id="OpenSSLDll2" Source="$(var.OpenSslDllDir)/libssl-3-x64.dll"/>
-				<?else ?>
-					<File Id="OpenSSLDll1" Source="$(var.OpenSslDllDir)/libcrypto-3.dll"/>
-					<File Id="OpenSSLDll2" Source="$(var.OpenSslDllDir)/libssl-3.dll"/>
-				<?endif ?>
+				<File Id="OpenSslDll" Source="$(var.OpenSslDllDir)/libssl-3-x64.dll"/>
+				<File Id="OpenSslCryptoDll" Source="$(var.OpenSslDllDir)/libcrypto-3-x64.dll"/>
 				<File Source="$(var.OpenSslExeDir)/openssl.exe"/>			
 				<File Source="$(var.OpenSslExeDir)/openssl.cnf"/>
 			</Component>
