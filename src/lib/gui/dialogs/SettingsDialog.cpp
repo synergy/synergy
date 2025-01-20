@@ -66,15 +66,6 @@ SettingsDialog::SettingsDialog(
       m_pCheckBoxEnableTls, &QCheckBox::toggled, this,
       &SettingsDialog::updateTlsControlsEnabled);
 
-  connect(
-      this, &SettingsDialog::shown, this,
-      [this] {
-        if (!m_appConfig.isActiveScopeWritable()) {
-          showReadOnlyMessage();
-        }
-      },
-      Qt::QueuedConnection);
-
 #ifdef DESKFLOW_GUI_HOOK_SETTINGS
   DESKFLOW_GUI_HOOK_SETTINGS
 #endif
@@ -107,13 +98,20 @@ void SettingsDialog::on_m_pCheckBoxEnableTls_clicked(bool) {
 }
 
 void SettingsDialog::on_m_pRadioSystemScope_toggled(bool checked) {
-  // We only need to test the System scoped Radio as they are connected
+  // We only need to test the System scoped radio, since the user scope radio
+  // toggles when the system scope radio is toggled.
   m_appConfig.setLoadFromSystemScope(checked);
+  m_appConfig.recall();
+
   loadFromConfig();
   updateControls();
 
-  if (isVisible() && !m_appConfig.isActiveScopeWritable()) {
-    showReadOnlyMessage();
+  if (!m_appConfig.isActiveScopeWritable()) {
+    if (m_appConfig.isActiveScopeSystem()) {
+      m_pRadioSystemScope->setText("All users (read-only)");
+    } else {
+      m_pRadioUserScope->setText("Current user (read-only)");
+    }
   }
 }
 
@@ -153,11 +151,6 @@ void SettingsDialog::on_m_pCheckBoxServiceEnabled_toggled(bool) {
 void SettingsDialog::showEvent(QShowEvent *event) {
   QDialog::showEvent(event);
   emit shown();
-}
-
-void SettingsDialog::showReadOnlyMessage() {
-  const auto activeScopeFilename = m_appConfig.scopes().activeFilePath();
-  messages::showReadOnlySettings(this, activeScopeFilename);
 }
 
 void SettingsDialog::accept() {
@@ -288,14 +281,6 @@ void SettingsDialog::updateControls() {
   m_pGroupService->setTitle("Service (Windows only)");
 #endif
 
-#ifdef Q_OS_LINUX
-  m_pCheckBoxDragAndDrop->setEnabled(false);
-#endif
-
-#ifndef Q_OS_LINUX
-  m_pCheckBoxUseLibei->setEnabled(false);
-#endif
-
   const bool writable = m_appConfig.isActiveScopeWritable();
   const bool serviceChecked = m_pCheckBoxServiceEnabled->isChecked();
   const bool logToFile = m_pCheckBoxLogToFile->isChecked();
@@ -307,9 +292,13 @@ void SettingsDialog::updateControls() {
   m_pCheckBoxLogToFile->setEnabled(writable);
   m_pCheckBoxAutoHide->setEnabled(writable);
   m_pCheckBoxPreventSleep->setEnabled(writable);
+  m_pCheckBoxCloseToTray->setEnabled(writable);
+
+  // TLS area
   m_pLineEditTlsCertPath->setEnabled(writable);
   m_pComboBoxTlsKeyLength->setEnabled(writable);
-  m_pCheckBoxCloseToTray->setEnabled(writable);
+  m_pPushButtonTlsCertPath->setEnabled(writable);
+  m_pPushButtonTlsRegenCert->setEnabled(writable);
 
   m_pCheckBoxServiceEnabled->setEnabled(writable && serviceAvailable);
   m_pLabelElevate->setEnabled(writable && serviceChecked && serviceAvailable);
@@ -321,6 +310,19 @@ void SettingsDialog::updateControls() {
   m_pLabelLogPath->setEnabled(writable && logToFile);
   m_pLineEditLogFilename->setEnabled(writable && logToFile);
   m_pButtonBrowseLog->setEnabled(writable && logToFile);
+
+  // Experimental tab
+  m_pCheckBoxInvertConnection->setEnabled(writable);
+  m_pCheckBoxDragAndDrop->setEnabled(writable);
+  m_pCheckBoxUseLibei->setEnabled(writable);
+
+#ifdef Q_OS_LINUX
+  m_pCheckBoxDragAndDrop->setEnabled(false);
+#endif
+
+#ifndef Q_OS_LINUX
+  m_pCheckBoxUseLibei->setEnabled(false);
+#endif
 
   updateTlsControls();
 }

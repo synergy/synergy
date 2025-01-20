@@ -248,7 +248,7 @@ public:
 private:
   static QString settingName(AppConfig::Setting name);
 
-  void recall();
+  void recall() override;
   void recallScreenName();
   void recallElevateMode();
   void recallFromAllScopes();

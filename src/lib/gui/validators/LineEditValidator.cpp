@@ -58,6 +58,10 @@ QValidator::State LineEditValidator::validate(QString &input, int &pos) const {
   }
 
   if (m_pError) {
+    if (!errorMessage.isEmpty()) {
+      qDebug("line edit error: %s", qUtf8Printable(errorMessage));
+    }
+
     m_pError->setMessage(errorMessage);
   }
 

@@ -32,6 +32,7 @@ class IAppConfig {
 
 public:
   virtual ~IAppConfig() = default;
+  virtual void recall() = 0;
 
   //
   // Getters

@@ -38,6 +38,8 @@ public:
     ON_CALL(*this, logFilename()).WillByDefault(testing::ReturnRef(m_stub));
   }
 
+  MOCK_METHOD(void, recall, (), (override));
+
   //
   // Getters
   //

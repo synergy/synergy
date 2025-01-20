@@ -61,7 +61,6 @@ private:
   bool isClientMode() const;
   void updateTlsControls();
   void updateTlsControlsEnabled();
-  void showReadOnlyMessage();
 
   /// @brief Load all settings.
   void loadFromConfig();
