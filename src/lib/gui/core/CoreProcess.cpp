@@ -353,6 +353,11 @@ void CoreProcess::handleLogLines(const QString &text) {
 void CoreProcess::start(std::optional<ProcessMode> processModeOption) {
   QMutexLocker locker(&m_processMutex);
 
+  if (m_mode == CoreProcess::Mode::None) {
+    qCritical("cannot start, core mode is unknown");
+    return;
+  }
+
   const auto processMode =
       processModeOption.value_or(m_appConfig.processMode());
 
