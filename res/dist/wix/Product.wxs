@@ -10,16 +10,16 @@
 			<UpgradeVersion Minimum="0.0.0.0" Property="UPGRADE"/>
 		</Upgrade>
 		<Feature Id="ProductFeature" Title="$(var.Name)">
-			<ComponentGroupRef Id="ProductComponents"/>
-			<ComponentGroupRef Id="OpenSSLComponents"/>
-			<ComponentGroupRef Id="QtStylesComponents"/>
-			<ComponentGroupRef Id="QtPluginComponents"/>
-			<ComponentGroupRef Id="QtTlsComponents"/>
-			<ComponentRef Id="RegistryEntries"/>
+			<ComponentGroupRef Id="ProductComponentGroup" />
+			<ComponentGroupRef Id="OpenSslComponentGroup"/>
+			<ComponentGroupRef Id="QtStylesComponentGroup"/>
+			<ComponentGroupRef Id="QtPluginComponentGroup"/>
+			<ComponentGroupRef Id="QtTlsComponentGroup"/>
+			<ComponentRef Id="RegistryEntryComponent"/>
 			<MergeRef Id="VC_Redist"/>
 		</Feature>
 		<DirectoryRef Id="TARGETDIR">
-			<Component Guid="7CF3564D-1F8E-4D3D-9781-E1EE22D5BD67" Id="RegistryEntries">
+			<Component Guid="7CF3564D-1F8E-4D3D-9781-E1EE22D5BD67" Id="RegistryEntryComponent">
 				<RegistryKey Id="$(var.AppId)_server" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes" Key="Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers" Root="HKLM">
 					<RegistryValue Name="[INSTALLFOLDER]$(var.ServerBin)" Type="string" Value="~ HIGHDPIAWARE WIN7RTM"/>
 				</RegistryKey>
@@ -63,17 +63,17 @@
 		<Directory Id="TARGETDIR" Name="SourceDir">
 			<Directory Id="$(var.ProgramFilesFolder)">
 				<Directory Id="INSTALLFOLDER" Name="$(var.Name)">
-					<Directory Id="OpenSSLDir" Name="OpenSSL"/>
+					<Directory Id="OpenSslDir" Name="OpenSSL"/>
 					<Directory Id="QtPlatformsDir" Name="Platforms"/>
 					<Directory Id="QtStylesDir" Name="styles"/>
-					<Directory Id="QtTlsDir" Name="styles"/>
+					<Directory Id="QtTlsDir" Name="tls"/>
 				</Directory>
 			</Directory>
 			<Directory Id="ProgramMenuFolder"/>
 		</Directory>
 	</Fragment>
 	<Fragment>
-		<ComponentGroup Directory="INSTALLFOLDER" Id="ProductComponents">
+		<ComponentGroup Directory="INSTALLFOLDER" Id="ProductComponentGroup">
 			<Component Guid="EC9AD3B0-277C-4157-B5C8-5FD5B6A5F4AD" Id="Core">
 				<File KeyPath="yes" Source="$(var.BinDir)/$(var.DaemonBin)"/>
 				<ServiceInstall Description="Controls the $(var.Name) foreground processes." DisplayName="$(var.Name)" ErrorControl="normal" Id="ServiceInstall" Name="$(var.Name)" Start="auto" Type="ownProcess">
@@ -105,27 +105,27 @@
 				<File Source="$(var.BinDir)\styles\qmodernwindowsstyle.dll"/>
 			</Component>
 		</ComponentGroup>
-		<ComponentGroup Directory="QtPlatformsDir" Id="QtPluginComponents">
-			<Component Guid="684EFA14-856B-440E-A5E6-E90E04E36B41" Id="QtPlatforms">
-				<File Source="$(var.BinDir)\platforms\qwindows.dll"/>
+		<ComponentGroup Directory="QtPlatformsDir" Id="QtPluginComponentGroup">
+			<Component Guid="684EFA14-856B-440E-A5E6-E90E04E36B41" Id="QtPlatformComponent">
+				<File Id="QtPlatformFile1" Source="$(var.BinDir)\platforms\qwindows.dll"/>
 			</Component>
 		</ComponentGroup>
-		<ComponentGroup Directory="QtStylesDir" Id="QtStylesComponents">
-			<Component Guid="96E0F8D8-64FD-4CE8-94D1-F6EDCBBB4995" Id="QtStyles">
-				<File Id="qmodernwindowsstyle" Source="$(var.BinDir)\styles\qmodernwindowsstyle.dll"/>
+		<ComponentGroup Directory="QtStylesDir" Id="QtStylesComponentGroup">
+			<Component Guid="96E0F8D8-64FD-4CE8-94D1-F6EDCBBB4995" Id="QtStylesComponent">
+				<File Id="QtStylesFile1" Source="$(var.BinDir)\styles\qmodernwindowsstyle.dll"/>
 			</Component>
 		</ComponentGroup>
-		<ComponentGroup Directory="QtTlsDir" Id="QtTlsComponents">
-			<Component Guid="61F2F744-5005-4CD3-A44D-88427F04BBE8" Id="QtTls">
-				<File Source="$(var.BinDir)\tls\qopensslbackend.dll"/>
+		<ComponentGroup Directory="QtTlsDir" Id="QtTlsComponentGroup">
+			<Component Guid="61F2F744-5005-4CD3-A44D-88427F04BBE8" Id="QtTlsComponent">
+				<File Id="QtTlsFile1" Source="$(var.BinDir)\tls\qopensslbackend.dll"/>
 			</Component>
 		</ComponentGroup>
-		<ComponentGroup Directory="OpenSSLDir" Id="OpenSSLComponents">
-			<Component Guid="92648F77-65A6-4B16-AC59-A1F37BD341B1" Id="OpenSSL">
-				<File Id="OpenSslDll" Source="$(var.OpenSslDllDir)/libssl-3-x64.dll"/>
-				<File Id="OpenSslCryptoDll" Source="$(var.OpenSslDllDir)/libcrypto-3-x64.dll"/>
-				<File Source="$(var.OpenSslExeDir)/openssl.exe"/>			
-				<File Source="$(var.OpenSslExeDir)/openssl.cnf"/>
+		<ComponentGroup Directory="OpenSslDir" Id="OpenSslComponentGroup">
+			<Component Guid="92648F77-65A6-4B16-AC59-A1F37BD341B1" Id="OpenSslComponent">
+				<File Id="OpenSslFile1" Source="$(var.OpenSslDllDir)/libssl-3-x64.dll"/>
+				<File Id="OpenSslFile2" Source="$(var.OpenSslDllDir)/libcrypto-3-x64.dll"/>
+				<File Id="OpenSslFile3" Source="$(var.OpenSslExeDir)/openssl.exe"/>			
+				<File Id="OpenSslFile4" Source="$(var.OpenSslExeDir)/openssl.cnf"/>
 			</Component>
 		</ComponentGroup>
 	</Fragment>
