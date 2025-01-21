@@ -579,11 +579,10 @@ void MainWindow::applyConfig() {
   m_pLineEditHostname->setText(m_AppConfig.serverHostname());
   m_pLineEditClientIp->setText(m_ServerConfig.getClientAddress());
 
-  if (!m_AppConfig.isActiveScopeWritable()) {
-    m_pButtonConfigureServer->setEnabled(false);
-    m_pRadioGroupServer->setEnabled(false);
-    m_pRadioGroupClient->setEnabled(false);
-  }
+  const auto writable = m_AppConfig.isActiveScopeWritable();
+  m_pButtonConfigureServer->setEnabled(writable);
+  m_pRadioGroupServer->setEnabled(writable);
+  m_pRadioGroupClient->setEnabled(writable);
 }
 
 void MainWindow::applyCloseToTray() const {
