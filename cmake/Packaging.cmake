@@ -113,7 +113,7 @@ macro(configure_linux_packaging)
   # Older versions of Debian/Ubuntu don't seem to detect the Qt dependencies or libpugixml.
   # OpenSSL isn't detected because it's an executable dependency (not a library).
   set(CPACK_DEBIAN_PACKAGE_DEPENDS "openssl, qt6-qpa-plugins, libqt6widgets6, libpugixml1v5")
-  set(CPACK_RPM_PACKAGE_REQUIRE "openssl")
+  set(CPACK_RPM_PACKAGE_REQUIRES "openssl")
 
   # The default for CMake seems to be /usr/local, which seems uncommon. While
   # the default /usr/local prefix causes the app to appear on Debian and Fedora,
