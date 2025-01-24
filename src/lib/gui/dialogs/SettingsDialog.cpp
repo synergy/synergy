@@ -233,11 +233,8 @@ void SettingsDialog::updateTlsControls() {
         m_pComboBoxTlsKeyLength->findText(keyLengthText));
   }
 
-  const auto tlsEnabled = m_tlsUtility.isEnabled();
-  const auto writable = m_appConfig.isActiveScopeWritable();
-
-  m_pCheckBoxEnableTls->setEnabled(writable);
-  m_pCheckBoxEnableTls->setChecked(writable && tlsEnabled);
+  m_pCheckBoxEnableTls->setEnabled(m_appConfig.isActiveScopeWritable());
+  m_pCheckBoxEnableTls->setChecked(m_tlsUtility.isEnabled());
   m_pLineEditTlsCertPath->setText(m_appConfig.tlsCertPath());
 }
 
