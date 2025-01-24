@@ -80,6 +80,7 @@ public:
   ServerConfig &serverConfig() { return m_ServerConfig; }
   void autoAddScreen(const QString name);
   void checkForUpdates();
+  void autoStartCore();
 
 signals:
   void created();

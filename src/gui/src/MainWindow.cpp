@@ -505,10 +505,6 @@ void MainWindow::open() {
   } else {
     showAndActivate();
   }
-
-  if (m_AppConfig.startedBefore()) {
-    m_CoreProcess.start();
-  }
 }
 
 void MainWindow::onCoreProcessStarting() {
@@ -1045,5 +1041,11 @@ void MainWindow::checkForUpdates() {
     m_VersionChecker.checkLatest();
   } else {
     qDebug("update check disabled");
+  }
+}
+
+void MainWindow::autoStartCore() {
+  if (m_AppConfig.startedBefore()) {
+    m_CoreProcess.start();
   }
 }
