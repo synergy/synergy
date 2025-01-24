@@ -275,11 +275,17 @@ private:
   template <typename T>
   void setInCurrentScope(AppConfig::Setting name, T value);
 
+  /**
+   * @brief Sets a setting in all scopes if the value is not `std::nullopt`.
+   */
+  template <typename T>
+  void setInAllScopes(AppConfig::Setting name, const std::optional<T> &value);
+
   /// @brief Sets the value of a common setting
   /// which should have the same value for all scopes
   /// @param [in] name The Setting to be saved
   /// @param [in] value The Value to be saved
-  template <typename T> void saveToAllScopes(AppConfig::Setting name, T value);
+  template <typename T> void setInAllScopes(AppConfig::Setting name, T value);
 
   QVariant getFromCurrentScope(
       AppConfig::Setting name, const QVariant &defaultValue = QVariant()) const;

@@ -1031,6 +1031,7 @@ void MainWindow::showAndActivate() {
 void MainWindow::checkForUpdates() {
   if (!m_AppConfig.enableUpdateCheck().has_value()) {
     m_AppConfig.setEnableUpdateCheck(messages::showUpdateCheckOption(this));
+    m_AppConfig.commit();
   }
 
   const QString fakeVersion =

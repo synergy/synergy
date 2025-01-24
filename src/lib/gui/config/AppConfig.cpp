@@ -202,10 +202,11 @@ void AppConfig::commit() {
 
   qDebug("committing app config");
 
-  saveToAllScopes(kWizardLastRun, m_WizardLastRun);
-  saveToAllScopes(kLoadSystemSettings, m_LoadFromSystemScope);
-  saveToAllScopes(kClientGroupChecked, m_ClientGroupChecked);
-  saveToAllScopes(kServerGroupChecked, m_ServerGroupChecked);
+  setInAllScopes(kWizardLastRun, m_WizardLastRun);
+  setInAllScopes(kLoadSystemSettings, m_LoadFromSystemScope);
+  setInAllScopes(kClientGroupChecked, m_ClientGroupChecked);
+  setInAllScopes(kServerGroupChecked, m_ServerGroupChecked);
+  setInAllScopes(kEnableUpdateCheck, m_EnableUpdateCheck);
 
   if (isActiveScopeWritable()) {
     setInCurrentScope(kScreenName, m_ScreenName);
@@ -235,7 +236,6 @@ void AppConfig::commit() {
     setInCurrentScope(kMainWindowPosition, m_MainWindowPosition);
     setInCurrentScope(kShowDevThanks, m_ShowDevThanks);
     setInCurrentScope(kShowCloseReminder, m_ShowCloseReminder);
-    setInCurrentScope(kEnableUpdateCheck, m_EnableUpdateCheck);
     setInCurrentScope(kEnableDragAndDrop, m_EnableDragAndDrop);
     setInCurrentScope(kEnableLibei, m_EnableLibei);
   }
@@ -303,11 +303,28 @@ QString AppConfig::settingName(Setting name) {
   return m_SettingsName[index];
 }
 
+template <typename T>
+void AppConfig::setInCurrentScope(Setting name, const std::optional<T> &value) {
+  if (value.has_value()) {
+    m_Scopes.setInScope(settingName(name), value.value());
+  }
+}
+
 template <typename T> void AppConfig::setInCurrentScope(Setting name, T value) {
   m_Scopes.setInScope(settingName(name), value);
 }
 
-template <typename T> void AppConfig::saveToAllScopes(Setting name, T value) {
+template <typename T>
+void AppConfig::setInAllScopes(Setting name, const std::optional<T> &value) {
+  if (value.has_value()) {
+    m_Scopes.setInScope(
+        settingName(name), value.value(), ConfigScopes::Scope::User);
+    m_Scopes.setInScope(
+        settingName(name), value.value(), ConfigScopes::Scope::System);
+  }
+}
+
+template <typename T> void AppConfig::setInAllScopes(Setting name, T value) {
   m_Scopes.setInScope(settingName(name), value, ConfigScopes::Scope::User);
   m_Scopes.setInScope(settingName(name), value, ConfigScopes::Scope::System);
 }
@@ -324,13 +341,6 @@ std::optional<T> AppConfig::getFromCurrentScope(
     return toType(m_Scopes.getFromScope(settingName(name)));
   } else {
     return std::nullopt;
-  }
-}
-
-template <typename T>
-void AppConfig::setInCurrentScope(Setting name, const std::optional<T> &value) {
-  if (value.has_value()) {
-    m_Scopes.setInScope(settingName(name), value.value());
   }
 }
 
