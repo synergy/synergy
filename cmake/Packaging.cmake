@@ -68,7 +68,7 @@ macro(configure_windows_packaging)
   # Docs: https://learn.microsoft.com/en-us/cpp/windows/redistributing-components-by-using-merge-modules?view=msvc-170
   set(REDIST_MERGE_MODULE_DIR "$ENV{VCINSTALLDIR}Redist/MSVC/v143/MergeModules")
   message(VERBOSE "MSVC merge module dir: ${REDIST_MERGE_MODULE_DIR}")
-  file(GLOB REDIST_MERGE_MODULE_PATHS "${REDIST_MERGE_MODULE_DIR}/Microsoft_VC143_CRT_x86.msm")
+  file(GLOB REDIST_MERGE_MODULE_PATHS "${REDIST_MERGE_MODULE_DIR}/Microsoft_VC143_CRT_x64.msm")
   if (REDIST_MERGE_MODULE_PATHS)
     message(VERBOSE "MSVC merge module paths: ${REDIST_MERGE_MODULE_PATHS}")
     list(GET REDIST_MERGE_MODULE_PATHS 0 REDIST_MERGE_MODULE_PATH)
