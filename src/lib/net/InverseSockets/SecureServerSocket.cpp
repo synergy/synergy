@@ -27,16 +27,18 @@
 // SecureServerSocket
 //
 SecureServerSocket::SecureServerSocket(
-    IEventQueue *events, SocketMultiplexer *socketMultiplexer,
-    IArchNetwork::EAddressFamily family)
-    : InverseServerSocket(events, socketMultiplexer, family) {}
+    IEventQueue *events, SocketMultiplexer *socketMultiplexer, IArchNetwork::EAddressFamily family
+)
+    : InverseServerSocket(events, socketMultiplexer, family)
+{
+}
 
-IDataSocket *SecureServerSocket::accept() {
+IDataSocket *SecureServerSocket::accept()
+{
   SecureSocket *socket = nullptr;
 
   try {
-    socket = new SecureSocket(
-        m_events, m_socketMultiplexer, m_socket.getRawSocket());
+    socket = new SecureSocket(m_events, m_socketMultiplexer, m_socket.getRawSocket());
     socket->initSsl(true);
     setListeningJob();
 
@@ -64,15 +66,15 @@ IDataSocket *SecureServerSocket::accept() {
   return dynamic_cast<IDataSocket *>(socket);
 }
 
-std::string SecureServerSocket::getCertificateFileName() const {
+std::string SecureServerSocket::getCertificateFileName() const
+{
   // if the tls cert option is set use that for the certificate file
   auto certificateFilename = ArgParser::argsBase().m_tlsCertFile;
 
   if (certificateFilename.empty()) {
     // default location of the TLS cert file in users dir
-    certificateFilename = deskflow::string::sprintf(
-        "%s/SSL/" DESKFLOW_APP_NAME ".pem",
-        ARCH->getProfileDirectory().c_str());
+    certificateFilename =
+        deskflow::string::sprintf("%s/SSL/" DESKFLOW_APP_NAME ".pem", ARCH->getProfileDirectory().c_str());
   }
 
   return certificateFilename;

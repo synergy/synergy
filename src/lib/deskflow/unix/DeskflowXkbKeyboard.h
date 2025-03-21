@@ -28,7 +28,8 @@ namespace deskflow {
 
 namespace linux {
 
-class DeskflowXkbKeyboard {
+class DeskflowXkbKeyboard
+{
   XkbRF_VarDefsRec m_data = {};
 
 public:

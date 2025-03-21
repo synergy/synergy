@@ -28,15 +28,18 @@
 // ArchFileUnix
 //
 
-ArchFileUnix::ArchFileUnix() {
+ArchFileUnix::ArchFileUnix()
+{
   // do nothing
 }
 
-ArchFileUnix::~ArchFileUnix() {
+ArchFileUnix::~ArchFileUnix()
+{
   // do nothing
 }
 
-const char *ArchFileUnix::getBasename(const char *pathname) {
+const char *ArchFileUnix::getBasename(const char *pathname)
+{
   if (pathname == NULL) {
     return NULL;
   }
@@ -49,7 +52,8 @@ const char *ArchFileUnix::getBasename(const char *pathname) {
   }
 }
 
-std::string ArchFileUnix::getUserDirectory() {
+std::string ArchFileUnix::getUserDirectory()
+{
   char *buffer = NULL;
   std::string dir;
 #if HAVE_GETPWUID_R
@@ -75,9 +79,13 @@ std::string ArchFileUnix::getUserDirectory() {
   return dir;
 }
 
-std::string ArchFileUnix::getSystemDirectory() { return "/etc"; }
+std::string ArchFileUnix::getSystemDirectory()
+{
+  return "/etc";
+}
 
-std::string ArchFileUnix::getInstalledDirectory() {
+std::string ArchFileUnix::getInstalledDirectory()
+{
 #if WINAPI_XWINDOWS
   return "/usr/bin";
 #else
@@ -85,9 +93,13 @@ std::string ArchFileUnix::getInstalledDirectory() {
 #endif
 }
 
-std::string ArchFileUnix::getLogDirectory() { return "/var/log"; }
+std::string ArchFileUnix::getLogDirectory()
+{
+  return "/var/log";
+}
 
-std::string ArchFileUnix::getPluginDirectory() {
+std::string ArchFileUnix::getPluginDirectory()
+{
   if (!m_pluginDirectory.empty()) {
     return m_pluginDirectory;
   }
@@ -99,7 +111,8 @@ std::string ArchFileUnix::getPluginDirectory() {
 #endif
 }
 
-std::string ArchFileUnix::getProfileDirectory() {
+std::string ArchFileUnix::getProfileDirectory()
+{
   String dir;
   if (!m_profileDirectory.empty()) {
     dir = m_profileDirectory;
@@ -113,8 +126,8 @@ std::string ArchFileUnix::getProfileDirectory() {
   return dir;
 }
 
-std::string
-ArchFileUnix::concatPath(const std::string &prefix, const std::string &suffix) {
+std::string ArchFileUnix::concatPath(const std::string &prefix, const std::string &suffix)
+{
   std::string path;
   path.reserve(prefix.size() + 1 + suffix.size());
   path += prefix;
@@ -125,10 +138,12 @@ ArchFileUnix::concatPath(const std::string &prefix, const std::string &suffix) {
   return path;
 }
 
-void ArchFileUnix::setProfileDirectory(const String &s) {
+void ArchFileUnix::setProfileDirectory(const String &s)
+{
   m_profileDirectory = s;
 }
 
-void ArchFileUnix::setPluginDirectory(const String &s) {
+void ArchFileUnix::setPluginDirectory(const String &s)
+{
   m_pluginDirectory = s;
 }

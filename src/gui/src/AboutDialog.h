@@ -27,7 +27,8 @@
 class QWidget;
 class QString;
 
-class AboutDialog : public QDialog, public Ui::AboutDialogBase {
+class AboutDialog : public QDialog, public Ui::AboutDialogBase
+{
   Q_OBJECT
 public:
   explicit AboutDialog(MainWindow *parent);

@@ -21,9 +21,14 @@
 #include "ArgsBase.h"
 
 namespace deskflow {
-enum ClientScrollDirection { SERVER = 1, INVERT_SERVER = -1 };
+enum ClientScrollDirection
+{
+  SERVER = 1,
+  INVERT_SERVER = -1
+};
 
-class ClientArgs : public ArgsBase {
+class ClientArgs : public ArgsBase
+{
 
   /// Public functions
 public:
@@ -33,8 +38,7 @@ public:
 
 public:
   int m_yscroll = 0;
-  bool m_enableLangSync =
-      false; /// @brief Should keyboard input be in same language as on server
+  bool m_enableLangSync = false; /// @brief Should keyboard input be in same language as on server
 
   /**
    * @brief m_clientScrollDirection

@@ -18,7 +18,8 @@
 #ifndef XWINDOWSPOWERMANAGER_H
 #define XWINDOWSPOWERMANAGER_H
 
-class XWindowsPowerManager {
+class XWindowsPowerManager
+{
 public:
   XWindowsPowerManager() = default;
   ~XWindowsPowerManager();

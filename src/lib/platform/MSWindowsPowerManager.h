@@ -18,7 +18,8 @@
 #ifndef MSWINDOWSPOWERMANAGER_H
 #define MSWINDOWSPOWERMANAGER_H
 
-class MSWindowsPowerManager {
+class MSWindowsPowerManager
+{
 public:
   ~MSWindowsPowerManager();
 

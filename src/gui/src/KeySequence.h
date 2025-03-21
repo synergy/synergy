@@ -25,7 +25,8 @@
 
 class QSettings;
 
-class KeySequence {
+class KeySequence
+{
 public:
   KeySequence();
 
@@ -34,18 +35,36 @@ public:
   bool appendKey(int modifiers, int key);
   bool appendMouseButton(int button);
   bool isMouseButton() const;
-  bool valid() const { return m_IsValid; }
-  int modifiers() const { return m_Modifiers; }
+  bool valid() const
+  {
+    return m_IsValid;
+  }
+  int modifiers() const
+  {
+    return m_Modifiers;
+  }
   void saveSettings(QSettings &settings) const;
   void loadSettings(QSettings &settings);
-  const QList<int> &sequence() const { return m_Sequence; }
+  const QList<int> &sequence() const
+  {
+    return m_Sequence;
+  }
 
   bool operator==(const KeySequence &ks) const;
 
 private:
-  void setValid(bool b) { m_IsValid = b; }
-  void setModifiers(int i) { m_Modifiers = i; }
-  QList<int> &sequence() { return m_Sequence; }
+  void setValid(bool b)
+  {
+    m_IsValid = b;
+  }
+  void setModifiers(int i)
+  {
+    m_Modifiers = i;
+  }
+  QList<int> &sequence()
+  {
+    return m_Sequence;
+  }
 
 private:
   QList<int> m_Sequence;

@@ -24,13 +24,15 @@
 AddClientDialog::AddClientDialog(const QString &clientName, QWidget *parent)
     : QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint),
       Ui::AddClientDialog(),
-      m_AddResult(kAddClientIgnore) {
+      m_AddResult(kAddClientIgnore)
+{
   setupUi(this);
 
   m_pLabelHead->setText(
       "A client wants to connect. "
       "Please choose a location for " +
-      clientName + ".");
+      clientName + "."
+  );
 
   QIcon icon(":res/icons/64x64/video-display.png");
   QSize IconSize(32, 32);
@@ -67,12 +69,12 @@ AddClientDialog::AddClientDialog(const QString &clientName, QWidget *parent)
   m_pDialogButtonBox->setLayoutDirection(Qt::RightToLeft);
 #endif
 
-  QPushButton *advanced =
-      m_pDialogButtonBox->addButton("Advanced", QDialogButtonBox::HelpRole);
+  QPushButton *advanced = m_pDialogButtonBox->addButton("Advanced", QDialogButtonBox::HelpRole);
   connect(advanced, SIGNAL(clicked()), this, SLOT(handleButtonAdvanced()));
 }
 
-AddClientDialog::~AddClientDialog() {
+AddClientDialog::~AddClientDialog()
+{
   delete m_pButtonUp;
   delete m_pButtonDown;
   delete m_pButtonLeft;
@@ -80,27 +82,32 @@ AddClientDialog::~AddClientDialog() {
   delete m_pLabelCenter;
 }
 
-void AddClientDialog::handleButtonLeft() {
+void AddClientDialog::handleButtonLeft()
+{
   m_AddResult = kAddClientLeft;
   close();
 }
 
-void AddClientDialog::handleButtonUp() {
+void AddClientDialog::handleButtonUp()
+{
   m_AddResult = kAddClientUp;
   close();
 }
 
-void AddClientDialog::handleButtonRight() {
+void AddClientDialog::handleButtonRight()
+{
   m_AddResult = kAddClientRight;
   close();
 }
 
-void AddClientDialog::handleButtonDown() {
+void AddClientDialog::handleButtonDown()
+{
   m_AddResult = kAddClientDown;
   close();
 }
 
-void AddClientDialog::handleButtonAdvanced() {
+void AddClientDialog::handleButtonAdvanced()
+{
   m_AddResult = kAddClientOther;
   close();
 }

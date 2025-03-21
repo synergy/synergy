@@ -35,31 +35,26 @@
 
 using namespace deskflow::gui;
 
-VersionChecker::VersionChecker(
-    std::shared_ptr<QNetworkAccessManagerProxy> network)
-    : m_network(
-          network ? network : std::make_shared<QNetworkAccessManagerProxy>()) {
+VersionChecker::VersionChecker(std::shared_ptr<QNetworkAccessManagerProxy> network)
+    : m_network(network ? network : std::make_shared<QNetworkAccessManagerProxy>())
+{
   m_network->init();
-  connect(
-      m_network.get(), &QNetworkAccessManagerProxy::finished, this,
-      &VersionChecker::replyFinished);
+  connect(m_network.get(), &QNetworkAccessManagerProxy::finished, this, &VersionChecker::replyFinished);
 }
 
-void VersionChecker::fakeCheck(const QString &fakeVersion) {
+void VersionChecker::fakeCheck(const QString &fakeVersion)
+{
   if (compareVersions(kVersion, fakeVersion) > 0) {
-    qDebug(
-        "current version %s older than fake version %s", qPrintable(kVersion),
-        qPrintable(fakeVersion));
+    qDebug("current version %s older than fake version %s", qPrintable(kVersion), qPrintable(fakeVersion));
     Q_EMIT updateFound(fakeVersion);
     return;
   } else {
-    qDebug(
-        "current version %s newer than fake version %s", qPrintable(kVersion),
-        qPrintable(fakeVersion));
+    qDebug("current version %s newer than fake version %s", qPrintable(kVersion), qPrintable(fakeVersion));
   }
 }
 
-void VersionChecker::checkLatest() const {
+void VersionChecker::checkLatest() const
+{
   QString url = deskflow::gui::env_vars::versionUrl();
 
 #ifdef DESKFLOW_GUI_HOOK_VERSION
@@ -68,24 +63,18 @@ void VersionChecker::checkLatest() const {
 
   qDebug("checking for updates at: %s", qPrintable(url));
   auto request = QNetworkRequest(url);
-  auto userAgent = QString("%1 %2 on %3")
-                       .arg(kAppName)
-                       .arg(kVersion)
-                       .arg(QSysInfo::prettyProductName());
+  auto userAgent = QString("%1 %2 on %3").arg(kAppName).arg(kVersion).arg(QSysInfo::prettyProductName());
   request.setHeader(QNetworkRequest::UserAgentHeader, userAgent);
   request.setRawHeader("X-" DESKFLOW_APP_NAME "-Version", kVersion);
-  request.setRawHeader(
-      "X-" DESKFLOW_APP_NAME "-Language",
-      QLocale::system().name().toStdString().c_str());
+  request.setRawHeader("X-" DESKFLOW_APP_NAME "-Language", QLocale::system().name().toStdString().c_str());
   m_network->get(request);
 }
 
-void VersionChecker::replyFinished(QNetworkReply *reply) {
-  const auto httpStatus =
-      reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+void VersionChecker::replyFinished(QNetworkReply *reply)
+{
+  const auto httpStatus = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
   if (reply->error() != QNetworkReply::NoError) {
-    qWarning(
-        "version check server error: %s", qPrintable(reply->errorString()));
+    qWarning("version check server error: %s", qPrintable(reply->errorString()));
     qWarning("error checking for updates, http status: %d", httpStatus);
     return;
   }
@@ -102,19 +91,19 @@ void VersionChecker::replyFinished(QNetworkReply *reply) {
 
   if (compareVersions(kVersion, newestVersion) > 0) {
     // Strip 'stable' from the version string as it's redundant.
-    const auto newestVersionClean =
-        QString(newestVersion).replace("-stable", "");
+    const auto newestVersionClean = QString(newestVersion).replace("-stable", "");
 
     qWarning(
-        "current version %s out of date, update available: %s",
-        qPrintable(kVersion), qPrintable(newestVersionClean));
+        "current version %s out of date, update available: %s", qPrintable(kVersion), qPrintable(newestVersionClean)
+    );
     Q_EMIT updateFound(newestVersionClean);
   } else {
     qDebug("current version %s up to date", qPrintable(kVersion));
   }
 }
 
-int VersionChecker::getStageVersion(QString stage) {
+int VersionChecker::getStageVersion(QString stage)
+{
   const char *stableName = "stable";
   const char *rcName = "rc";
   const char *betaName = "beta";
@@ -141,7 +130,8 @@ int VersionChecker::getStageVersion(QString stage) {
   return otherValue;
 }
 
-int VersionChecker::compareVersions(const QString &left, const QString &right) {
+int VersionChecker::compareVersions(const QString &left, const QString &right)
+{
   if (left.compare(right) == 0)
     return 0; // versions are same.
 
@@ -168,12 +158,9 @@ int VersionChecker::compareVersions(const QString &left, const QString &right) {
   const int rightStage = getStageVersion(rightStagePart);
 
   const bool rightWins =
-      (rightMajor > leftMajor) ||
-      ((rightMajor >= leftMajor) && (rightMinor > leftMinor)) ||
-      ((rightMajor >= leftMajor) && (rightMinor >= leftMinor) &&
-       (rightPatch > leftPatch)) ||
-      ((rightMajor >= leftMajor) && (rightMinor >= leftMinor) &&
-       (rightPatch >= leftPatch) && (rightStage > leftStage));
+      (rightMajor > leftMajor) || ((rightMajor >= leftMajor) && (rightMinor > leftMinor)) ||
+      ((rightMajor >= leftMajor) && (rightMinor >= leftMinor) && (rightPatch > leftPatch)) ||
+      ((rightMajor >= leftMajor) && (rightMinor >= leftMinor) && (rightPatch >= leftPatch) && (rightStage > leftStage));
 
   return rightWins ? 1 : -1;
 }

@@ -27,11 +27,13 @@ namespace deskflow::gui::core {
 // WaylandWarnings::Deps
 //
 
-void WaylandWarnings::Deps::showWaylandLibraryError(QWidget *parent) {
+void WaylandWarnings::Deps::showWaylandLibraryError(QWidget *parent)
+{
   messages::showWaylandLegacy(parent);
 }
 
-void WaylandWarnings::Deps::showWaylandExperimental(QWidget *parent) {
+void WaylandWarnings::Deps::showWaylandExperimental(QWidget *parent)
+{
   messages::showWaylandExperimental(parent);
 }
 
@@ -40,11 +42,11 @@ void WaylandWarnings::Deps::showWaylandExperimental(QWidget *parent) {
 //
 
 void WaylandWarnings::showOnce(
-    QWidget *parent, CoreProcess::Mode mode, bool hasEi, bool hasPortal,
-    bool hasPortalInputCapture) {
+    QWidget *parent, CoreProcess::Mode mode, bool hasEi, bool hasPortal, bool hasPortalInputCapture
+)
+{
 
-  const auto portalIcProblem =
-      !hasPortalInputCapture && mode == CoreProcess::Mode::Server;
+  const auto portalIcProblem = !hasPortalInputCapture && mode == CoreProcess::Mode::Server;
 
   if (!hasEi || !hasPortal || portalIcProblem) {
     if (!m_errorShown) {

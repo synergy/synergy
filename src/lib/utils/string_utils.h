@@ -29,10 +29,10 @@ namespace deskflow::utils {
  *
  * Ideally C++20 would have a std::trim function, but until then, this will do.
  */
-inline std::string trim(const std::string &str) {
+inline std::string trim(const std::string &str)
+{
   auto front = std::ranges::find_if(str, isNotSpace);
-  auto back =
-      std::ranges::find_if(str | std::views::reverse, isNotSpace).base();
+  auto back = std::ranges::find_if(str | std::views::reverse, isNotSpace).base();
   return (front < back ? std::string(front, back) : std::string{});
 }
 

@@ -23,8 +23,8 @@
 #include <QtCore>
 #include <QtGui>
 
-DeskflowApplication::DeskflowApplication(int &argc, char **argv)
-    : QApplication(argc, argv) {
+DeskflowApplication::DeskflowApplication(int &argc, char **argv) : QApplication(argc, argv)
+{
 
   // causes dark mode to be used on some OS (e.g. Windows)
   setStyle("fusion");
