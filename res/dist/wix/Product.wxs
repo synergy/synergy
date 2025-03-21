@@ -38,7 +38,7 @@
 				<!-- Windows 8 and later only -->
 				<Condition><![CDATA[Installed OR (VersionNT >= 602)]]></Condition>
 			</Component>
-			<Merge Id="VC_Redist" SourceFile="$(var.ProjectResDir)\dist\wix\msm\Microsoft_VC142_CRT_x64.msm" DiskId="1" Language="0"/>
+			<Merge Id="VC_Redist" SourceFile="$(var.RedistMergeModulePath)" DiskId="1" Language="0"/>
 		</DirectoryRef>
 		<Property Id="CommonBackground">CommonBackground</Property>
 		<Binary Id="CommonBackground" SourceFile="$(var.ResDir)\dist\wix\images\common_background.png"/>

@@ -27,4 +27,5 @@
     <?define CoreBin="@CORE_BINARY_NAME@.exe"?>
     <?define DaemonBin="@DAEMON_BINARY_NAME@.exe"?>
     <?define LegacyBin="@LEGACY_BINARY_NAME@.exe"?>
+    <?define RedistMergeModulePath="@REDIST_MERGE_MODULE_PATH@"?>
 </Include>

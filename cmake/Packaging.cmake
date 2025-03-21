@@ -63,6 +63,20 @@ macro(configure_windows_packaging)
       "8F57C657-BC87-45E6-840E-41242A93511C"
       CACHE STRING "GUID for 32-bit MSI installer")
 
+  # Get the merge module (MSM) from the dev env.
+  # This is deprecated and we should switch to MSI when possible.
+  # Docs: https://learn.microsoft.com/en-us/cpp/windows/redistributing-components-by-using-merge-modules?view=msvc-170
+  set(REDIST_MERGE_MODULE_DIR "$ENV{VCINSTALLDIR}Redist/MSVC/v143/MergeModules")
+  message(VERBOSE "MSVC merge module dir: ${REDIST_MERGE_MODULE_DIR}")
+  file(GLOB REDIST_MERGE_MODULE_PATHS "${REDIST_MERGE_MODULE_DIR}/Microsoft_VC143_CRT_x86.msm")
+  if (REDIST_MERGE_MODULE_PATHS)
+    message(VERBOSE "MSVC merge module paths: ${REDIST_MERGE_MODULE_PATHS}")
+    list(GET REDIST_MERGE_MODULE_PATHS 0 REDIST_MERGE_MODULE_PATH)
+    message(STATUS "MSVC merge module found: ${REDIST_MERGE_MODULE_PATH}")
+  else()
+    message(WARNING "MSVC merge module not found in: ${REDIST_MERGE_MODULE_DIR}")
+  endif()
+
   configure_files(${PROJECT_SOURCE_DIR}/res/dist/wix
                   ${PROJECT_BINARY_DIR}/installer)
 
