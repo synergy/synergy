@@ -23,7 +23,8 @@ cmake_minimum_required(VERSION 3.8)
 project(deskflow C CXX)
 
 # Include first to control the cached variables.
-include("ext/synergy-extra/cmake/Extra.cmake")
+set(SYNERGY_EXTRA_ROOT "${CMAKE_SOURCE_DIR}/ext/synergy-extra")
+include("${SYNERGY_EXTRA_ROOT}/cmake/Extra.cmake")
 
 include(cmake/Version.cmake)
 include(cmake/Definitions.cmake)
@@ -31,17 +32,13 @@ include(cmake/Build.cmake)
 include(cmake/Libraries.cmake)
 include(cmake/Packaging.cmake)
 
-# Builds the 'extra' library (linked against later on).
-add_subdirectory("ext/synergy-extra")
-
 set_version()
 configure_definitions()
 configure_build()
 configure_libs()
 configure_packaging()
 
-include_directories("ext/synergy-extra/src/lib")
-
+add_subdirectory(${SYNERGY_EXTRA_ROOT})
 add_subdirectory(src)
 
 post_config_all()
