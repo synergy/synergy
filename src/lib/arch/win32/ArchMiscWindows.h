@@ -27,6 +27,8 @@
 
 #include <Tlhelp32.h>
 
+#include <functional>
+
 //! Miscellaneous win32 functions.
 class ArchMiscWindows
 {
@@ -46,7 +48,7 @@ public:
     kDISPLAY = 0x0002
   };
 
-  typedef int (*RunFunc)(void);
+  using RunFunc = std::function<int(void)>;
 
   //! Initialize
   static void init();
@@ -111,6 +113,9 @@ public:
   //! Delete a value
   static void deleteValue(HKEY parent, const TCHAR *name);
 
+  //! Delete a tree of keys from the registry
+  static void deleteKeyTree(HKEY parent, const TCHAR *name);
+
   //! Test if a value exists
   static bool hasValue(HKEY key, const TCHAR *name);
 
@@ -166,9 +171,17 @@ public:
   //! Returns true if we got the parent process name.
   static bool getParentProcessName(String &name);
 
+  //! Gets the window instance saved at program start.
+  /*!
+  e.g. Used by `GetModuleFileName` which is used when installing the daemon.
+  */
   static HINSTANCE instanceWin32();
 
+  //! Saves the window instance for later use.
   static void setInstanceWin32(HINSTANCE instance);
+
+  //! Get the name of the active input desktop.
+  static std::string getActiveDesktopName();
 
   static BOOL WINAPI getProcessEntry(PROCESSENTRY32 &entry, DWORD processID);
   static BOOL WINAPI getSelfProcessEntry(PROCESSENTRY32 &entry);

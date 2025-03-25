@@ -34,8 +34,7 @@ if(WIN32)
     net
     platform
     app
-    ${libs})
-
-  post_config()
+    ${libs}
+    Qt6::Core)
 
 endif()

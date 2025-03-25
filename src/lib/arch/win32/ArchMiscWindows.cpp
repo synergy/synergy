@@ -17,7 +17,9 @@
  */
 
 #include "arch/win32/ArchMiscWindows.h"
+
 #include "arch/win32/ArchDaemonWindows.h"
+#include "arch/win32/XArchWindows.h"
 #include "base/Log.h"
 #include "common/constants.h"
 
@@ -180,6 +182,15 @@ bool ArchMiscWindows::hasValue(HKEY key, const TCHAR *name)
   DWORD type;
   LONG result = RegQueryValueEx(key, name, 0, &type, NULL, NULL);
   return (result == ERROR_SUCCESS && (type == REG_DWORD || type == REG_SZ));
+}
+
+void ArchMiscWindows::deleteKeyTree(HKEY key, const TCHAR *name)
+{
+  assert(key != NULL);
+  assert(name != NULL);
+  if (key == NULL || name == NULL)
+    return;
+  RegDeleteTree(key, name);
 }
 
 ArchMiscWindows::EValueType ArchMiscWindows::typeOfValue(HKEY key, const TCHAR *name)
@@ -467,4 +478,20 @@ void ArchMiscWindows::setInstanceWin32(HINSTANCE instance)
 {
   assert(instance != NULL);
   s_instanceWin32 = instance;
+}
+
+std::string ArchMiscWindows::getActiveDesktopName()
+{
+  HDESK desk = OpenInputDesktop(0, TRUE, GENERIC_READ);
+  if (desk == nullptr) {
+    LOG((CLOG_ERR "could not open input desktop"));
+    throw XArch(new XArchEvalWindows());
+  }
+
+  DWORD size;
+  GetUserObjectInformation(desk, UOI_NAME, nullptr, 0, &size);
+  auto *name = (TCHAR *)alloca(size + sizeof(TCHAR));
+  GetUserObjectInformation(desk, UOI_NAME, name, size, &size);
+  CloseDesktop(desk);
+  return name;
 }

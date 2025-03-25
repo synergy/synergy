@@ -56,7 +56,8 @@ public:
     }
   };
 
-  App(IEventQueue *events, CreateTaskBarReceiverFunc createTaskBarReceiver, deskflow::ArgsBase *args);
+  App(IEventQueue *events, CreateTaskBarReceiverFunc createTaskBarReceiver, deskflow::ArgsBase *args,
+      bool runEventLoop = true);
   App(App const &) = delete;
   App(App &&) = delete;
   virtual ~App();
@@ -101,10 +102,6 @@ public:
   void initApp(int argc, char **argv)
   {
     initApp(argc, (const char **)argv);
-  }
-  void setEvents(EventQueue &events)
-  {
-    m_events = &events;
   }
   void setSocketMultiplexer(SocketMultiplexer *sm)
   {
@@ -154,7 +151,7 @@ private:
 class MinimalApp : public App
 {
 public:
-  MinimalApp();
+  MinimalApp(IEventQueue *events);
   virtual ~MinimalApp();
 
   // IApp overrides
@@ -177,11 +174,6 @@ public:
   {
     return "";
   }
-
-private:
-  Arch m_arch;
-  Log m_log;
-  EventQueue m_events;
 };
 
 #if WINAPI_MSWINDOWS

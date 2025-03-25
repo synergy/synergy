@@ -17,9 +17,10 @@
  */
 
 #include "arch/win32/ArchSystemWindows.h"
-#include "arch/win32/ArchMiscWindows.h"
 
 #include "arch/XArch.h"
+#include "arch/win32/ArchMiscWindows.h"
+#include "common/constants.h"
 
 #include "tchar.h"
 #include <string>
@@ -112,4 +113,9 @@ bool ArchSystemWindows::isWOW64() const
   }
 #endif
   return false;
+}
+
+void ArchSystemWindows::clearSettings() const
+{
+  ArchMiscWindows::deleteKeyTree(HKEY_LOCAL_MACHINE, kWindowsRegistryKey);
 }

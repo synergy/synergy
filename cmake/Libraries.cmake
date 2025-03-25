@@ -25,6 +25,12 @@ macro(configure_libs)
     configure_windows_libs()
   endif()
 
+  find_package(Qt6 REQUIRED COMPONENTS Core Widgets Network)
+  
+  set(CMAKE_AUTOMOC ON)
+  set(CMAKE_AUTOUIC ON)
+  set(CMAKE_AUTORCC ON)
+
   configure_python()
   configure_qt()
   configure_openssl()
