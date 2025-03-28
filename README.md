@@ -2,11 +2,10 @@
 
 Use the keyboard, mouse, or trackpad of one computer to control nearby computers, and work seamlessly between them.
 
+- [Get Synergy](https://symless.com/synergy)
+- [Technical support](https://symless.com/synergy/contact)
+
 This repository contains the source code used to build Synergy 1 and the Core for Synergy 3.
-It is based on upstream Deskflow (Synergy is now downstream of Deskflow).
+It's based on the upstream Deskflow community project, which is sponsored by Synergy.
 
-We recommend you either:
-1. [Get Synergy](https://symless.com/synergy) (purchase a license)
-3. [Download Deskflow](https://deskflow.org) (community upstream)
-
-If you need help with Synergy, please [contact us](https://symless.com/synergy/contact).
+- [Contibute to Deskflow](https://deskflow.org)
