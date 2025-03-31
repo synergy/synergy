@@ -6,9 +6,11 @@ name: CI
 
 on:
   workflow_dispatch:
-    inputs:
-      version:
-        description: Synergy version number
+  push:
+    branches:
+      - master*
+    tags:
+      - v*
   pull_request:
     types:
       - opened
@@ -25,7 +27,6 @@ env:
   SYNERGY_PACKAGE_PREFIX: ${{ vars.SYNERGY_PACKAGE_PREFIX }}
   SYNERGY_ENABLE_ACTIVATION: ${{ vars.SYNERGY_ENABLE_ACTIVATION }}
   PACKAGE_BUILD: ${{ !github.event.pull_request.draft }}
-  PACKAGE_UPLOAD: ${{ !github.event.pull_request.draft }}
 
 jobs:
   # Quality gate to allow PR merge, used in the branch protection rules.
@@ -44,15 +45,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: true
 
-      - name: Set version env var
+      - name: Get version
+        id: get-version
         uses: ./.github/actions/get-version
 
       - name: Upload to AWS S3
         uses: ./.github/actions/dist-upload
         with:
           aws-s3-target-dir: ${{ vars.AWS_S3_UPLOAD_DIR }}
-          aws-s3-package-version: ${{ env.SYNERGY_VERSION }}
+          aws-s3-package-version: ${{ steps.get-version.outputs.version }}
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
@@ -76,6 +81,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           submodules: true
 
       - name: Cache vcpkg dir
@@ -117,9 +123,6 @@ jobs:
         env:
           VCPKG_ROOT: "" # Unset deliberately to suppress 'already installed' warning.
         run: python ./scripts/install_deps.py
-
-      - name: Get version
-        uses: ./.github/actions/get-version
 
       - name: Configure
         run: |
@@ -184,6 +187,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           submodules: true
 
       - name: Cache deps dir
@@ -194,9 +198,6 @@ jobs:
 
       - name: Install dependencies
         run: ./scripts/install_deps.py
-
-      - name: Get version
-        uses: ./.github/actions/get-version
 
       - name: Configure
         run: |
@@ -242,8 +243,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          submodules: true
 
       - name: Get JSON file
         id: get
@@ -290,6 +289,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           submodules: true
 
       - name: Config Git safe dir
@@ -300,9 +300,6 @@ jobs:
         env:
           # Prevent apt prompting for input.
           DEBIAN_FRONTEND: noninteractive
-
-      - name: Get version
-        uses: ./.github/actions/get-version
 
       - name: Configure
         run: |

@@ -18,16 +18,21 @@
 # On Windows, we also set a special 4-digit MSI version number.
 macro(set_version)
 
-  set(DESKFLOW_VERSION $ENV{DESKFLOW_VERSION})
-  string(STRIP "${DESKFLOW_VERSION}" DESKFLOW_VERSION)
+  include(${SYNERGY_EXTRA_ROOT}/cmake/Version.cmake)
+  version_from_git_tags(VERSION VERSION_MAJOR VERSION_MINOR VERSION_PATCH VERSION_REVISION)
+  set(DESKFLOW_VERSION "${VERSION}")
 
-  if(NOT DESKFLOW_VERSION)
-    file(READ "${PROJECT_SOURCE_DIR}/VERSION" DESKFLOW_VERSION)
-    string(STRIP "${DESKFLOW_VERSION}" DESKFLOW_VERSION)
-  endif()
+  set(version_file "${CMAKE_BINARY_DIR}/VERSION")
+  file(WRITE ${version_file} ${VERSION})
+  message(VERBOSE "Version file output: ${version_file}")
 
   message(STATUS "Version number (semver): " ${DESKFLOW_VERSION})
   add_definitions(-DDESKFLOW_VERSION="${DESKFLOW_VERSION}")
+
+  # Arch does not support SemVer or DEB/RPM version format, so use the four-part
+  # version format which funnily enough is what Microsoft requires for MSI.
+  set(DESKFLOW_VERSION_FOUR_PART "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}.${VERSION_REVISION}")
+  message(STATUS "Version number (4-part): ${DESKFLOW_VERSION_FOUR_PART}")
 
   # Useful for copyright (e.g. in macOS bundle .plist.in and Windows version .rc
   # file)
@@ -41,40 +46,18 @@ macro(set_version)
 
 endmacro()
 
-macro(set_four_part_version)
-
-  string(REGEX MATCH "^([0-9]+)\\.([0-9]+)\\.([0-9]+)" _ "${DESKFLOW_VERSION}")
-  set(VERSION_MAJOR "${CMAKE_MATCH_1}")
-  set(VERSION_MINOR "${CMAKE_MATCH_2}")
-  set(VERSION_PATCH "${CMAKE_MATCH_3}")
-
-  # Find the revision number, which is the number after the 'r'.
-  string(REGEX MATCH "r([0-9]+)$" _ "${DESKFLOW_VERSION}")
-  set(VERSION_REVISION "${CMAKE_MATCH_1}")
-  if(NOT VERSION_REVISION)
-    set(VERSION_REVISION "0")
-  endif()
-
-  set(DESKFLOW_VERSION_FOUR_PART
-      "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}.${VERSION_REVISION}")
-
-endmacro()
-
 # MSI requires a 4-digit number and doesn't accept semver.
 macro(set_windows_version)
 
-  set_four_part_version()
-
   # Dot-separated version number for MSI and Windows version .rc file.
   set(DESKFLOW_VERSION_MS ${DESKFLOW_VERSION_FOUR_PART})
-  message(VERBOSE "Version number for (Microsoft 4-part): "
-          ${DESKFLOW_VERSION_MS})
 
   # CSV version number for Windows version .rc file.
   set(DESKFLOW_VERSION_MS_CSV
       "${VERSION_MAJOR},${VERSION_MINOR},${VERSION_PATCH},${VERSION_REVISION}")
   message(VERBOSE "Version number for (Microsoft CSV): "
           ${DESKFLOW_VERSION_MS_CSV})
+
 endmacro()
 
 macro(set_linux_version)
@@ -85,10 +68,5 @@ macro(set_linux_version)
   # this was also introduced in RPM 4.10.0.
   string(REGEX REPLACE "-" "~" DESKFLOW_VERSION_LINUX "${DESKFLOW_VERSION}")
   message(STATUS "Version number (DEB/RPM): ${DESKFLOW_VERSION_LINUX}")
-
-  # Arch does not support SemVer or DEB/RPM version format, so use the four-part
-  # version format which funnily enough is what Microsoft requires for MSI.
-  set_four_part_version()
-  message(STATUS "Version number (4-part): ${DESKFLOW_VERSION_FOUR_PART}")
 
 endmacro()
